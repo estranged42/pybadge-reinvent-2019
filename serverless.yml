@@ -1,0 +1,139 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: pybadge-reinvent-2019
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+plugins:
+  - serverless-python-requirements
+  - serverless-offline
+
+custom:
+  pythonRequirements:
+      dockerizePip: non-linux
+  client:
+      bucketName: ${env:S3_RESOURCE_BUCKET}
+      distributionFolder: 'site'
+      manageResources: false
+
+provider:
+  name: aws
+  runtime: python3.7
+  stage: dev
+  region: us-west-2
+  logRetentionInDays: 14
+  deploymentBucket:
+    name: ${env:S3_RESOURCE_BUCKET}
+
+# you can define service wide environment variables here
+#  environment:
+#    variable1: value1
+
+
+functions:
+  feed:
+    handler: lambda_feed.handler
+    role: LambdaRoleFeed
+    timeout: 60
+#    The following are a few example events you can configure
+#    NOTE: Please make sure to change your handler code to work with those events
+#    Check the event documentation for details
+#    events:
+#      - http:
+#          path: users/create
+#          method: get
+#    Define function environment variables here
+#    environment:
+#      variable2: value2
+
+  stats:
+    handler: lambda_stats.handler
+    role: LambdaRoleFeed
+    timeout: 60
+    events:
+      - http:
+          path: stats
+          method: get
+
+
+resources:
+  Resources:
+    ServiceAnnouncementsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: "aws_service_announcements"
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    ServiceAnnouncementsInfoDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: "aws_service_announcements_metadata"
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    LambdaRoleFeed:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - lambda.amazonaws.com
+            Action:
+            - sts:AssumeRole
+        Policies:
+        - PolicyName: "lambda-access"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Sid: CloudWatchLogsAccess
+              Effect: Allow
+              Action:
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource:
+                - "*"
+
+
+# you can add packaging information here
+package:
+  exclude:
+    - node_modules/**
+    - bin/**
+    - .serverless/**
+    - images/**
+    - environment*
+    - pybadge/**
+    - lambda_feed_event.json
+    - package*json
+    - serverless.yml

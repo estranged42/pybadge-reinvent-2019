@@ -1,0 +1,23 @@
+{
+    "name": "pybadge-reinvent-2019",
+    "version": "1.0.0",
+    "description": "Script wrapper for testing, packaging and deploying the pybadge lambda function",
+    "dependencies": {
+        "https-proxy-agent": "^3.0.0",
+        "serverless-finch": "^2.4.2",
+        "serverless-pseudo-parameters": "^2.5.0"
+    },
+    "scripts": {
+        "clean": "bin/clean.sh",
+        "setup": "bin/setup.sh",
+        "local": "bin/run-feed.sh",
+        "test": "bin/run-test.sh",
+        "api": "bin/run-api.sh",
+        "deploy": "bin/deploy.sh"
+    },
+    "devDependencies": {
+        "serverless": "^1.57.0",
+        "serverless-offline": "^5.12.0",
+        "serverless-python-requirements": "^5.0.1"
+    }
+}
