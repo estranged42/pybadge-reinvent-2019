@@ -85,7 +85,8 @@ def store_entry(e):
     item = {
         'id': e.id,
         'description': e.title,
-        'pub_date': decimal.Decimal(pub_timestamp)
+        'pub_date': decimal.Decimal(pub_timestamp),
+        'pub_date_string': e.published
     }
 
     if entry_exists(e.id):
@@ -149,7 +150,16 @@ def incriment_count(n):
 def handler(event, context):
     new_item_count = 0
     d = feedparser.parse(feed_url)
-    feed_title = d.feed.title
+    if d.feed:
+        feed_title = d.feed.title
+    else:
+        loginfo(f"Problem with feed. Empty feed.")
+        loginfo(d.feed)
+        loginfo(d.entries)
+        return {
+            'error': 'feed error'
+        }
+
     num_items = len(d.entries)
     loginfo( f"'{feed_title}' has {num_items} entries.")
     most_recent_announcement = ""
