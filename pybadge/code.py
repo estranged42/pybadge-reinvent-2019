@@ -6,6 +6,10 @@ from adafruit_esp32spi import adafruit_esp32spi
 import adafruit_requests as requests
 from adafruit_pybadger import PyBadger 
 import neopixel
+import json
+from secrets import secrets
+import time
+
 
 OFF = (0,0,0)
 BLUE = (32,32,255)
@@ -14,6 +18,36 @@ pixels = pybadger.pixels
 pixels.brightness = 0.005
 pixels.fill(OFF)
 pixels.show()
+
+# Setup WiFi
+esp32_cs = DigitalInOut(board.D13)
+esp32_ready = DigitalInOut(board.D11)
+esp32_reset = DigitalInOut(board.D12)
+
+spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
+esp = adafruit_esp32spi.ESP_SPIcontrol(spi, esp32_cs, esp32_ready, esp32_reset)
+
+requests.set_socket(socket, esp)
+
+if esp.status == adafruit_esp32spi.WL_IDLE_STATUS:
+    print("ESP32 found and in idle mode")
+print("Firmware vers.", esp.firmware_version)
+print("MAC addr:", [hex(i) for i in esp.MAC_address])
+
+wifi_not_connected = True
+
+while wifi_not_connected:
+    try:
+        esp.connect_AP(secrets['wifi_user'], secrets['wifi_pass'])
+        wifi_not_connected = False
+    except Exception as e:
+        print(e)
+        pass
+
+print("Connected to", str(esp.ssid, 'utf-8'), "\tRSSI:", esp.rssi)
+print("My IP address is", esp.pretty_ip(esp.ip_address))
+
+time.sleep(2)
 
 
 def show_badge():
@@ -25,7 +59,14 @@ def show_wildcat():
 
 
 def aws_announcements():
-    pybadger.aws_announcements(name_string="38", 
+    pybadger.aws_announcements(name_string="...:::...", 
+                                hello_scale=1, 
+                                my_name_is_scale=1, 
+                                name_scale=1
+                                )
+    stats_resp = requests.get('https://f3m81lupa9.execute-api.us-west-2.amazonaws.com/dev/stats')
+    stats = stats_resp.json()
+    pybadger.aws_announcements(name_string=stats['count'], 
                                 hello_scale=1, 
                                 my_name_is_scale=1, 
                                 name_scale=1
