@@ -20,6 +20,7 @@ service: pybadge-reinvent-2019
 plugins:
   - serverless-python-requirements
   - serverless-offline
+  - serverless-pseudo-parameters
 
 custom:
   pythonRequirements:
@@ -37,6 +38,11 @@ provider:
   logRetentionInDays: 14
   deploymentBucket:
     name: ${env:S3_RESOURCE_BUCKET}
+  stackTags:
+      service: reinvent pybadge
+      contactnetid: fischerm
+      environment: dev
+      accountnumber: '1192660'
 
 # you can define service wide environment variables here
 #  environment:
@@ -48,6 +54,8 @@ functions:
     handler: lambda_feed.handler
     role: LambdaRoleFeed
     timeout: 60
+    events:
+      - schedule: rate(1 hour)
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
@@ -123,6 +131,14 @@ resources:
                 - logs:PutLogEvents
               Resource:
                 - "*"
+            - Sid: DynamoDBAccess
+              Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:UpdateItem
+              Resource:
+                - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/aws_service_announcements"
+                - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/aws_service_announcements_metadata"
 
 
 # you can add packaging information here
