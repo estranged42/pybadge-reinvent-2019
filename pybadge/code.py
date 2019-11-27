@@ -64,14 +64,17 @@ def aws_announcements():
                                 my_name_is_scale=1, 
                                 name_scale=1
                                 )
-    stats_resp = requests.get('https://f3m81lupa9.execute-api.us-west-2.amazonaws.com/dev/stats')
-    stats = stats_resp.json()
-    pybadger.aws_announcements(name_string=stats['count'], 
-                                hello_scale=1, 
-                                my_name_is_scale=1, 
-                                name_scale=1
-                                )
-
+    try:
+        stats_resp = requests.get('https://f3m81lupa9.execute-api.us-west-2.amazonaws.com/dev/stats')
+        stats = stats_resp.json()
+        pybadger.aws_announcements(name_string=stats['count'], 
+                                    hello_scale=1, 
+                                    my_name_is_scale=1, 
+                                    name_scale=1
+                                    )
+    except Exception as e:
+        print(e)
+        pass
 
 aws_announcements()
 
