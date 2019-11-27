@@ -77,8 +77,8 @@ def get_metadata(id):
 
 def handler(event, context):
     response = {
-        'count': int(get_metadata('announcement_count')),
-        'most_recent': get_metadata('recent_announcement')
+        'count': str(get_metadata('announcement_count')),
+        'most_recent': str(get_metadata('recent_announcement'))
     }
 
     return {
