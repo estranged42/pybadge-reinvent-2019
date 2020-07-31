@@ -252,7 +252,8 @@ class PyBadger:
             on_disk_bitmap = displayio.OnDiskBitmap(file_name)
             face_image = displayio.TileGrid(on_disk_bitmap, pixel_shader=displayio.ColorConverter())
             business_card_splash.append(face_image)
-            self.display.wait_for_frame()
+            # self.display.wait_for_frame()   #CP 4
+            self.display.refresh()  #CP 5
         if name_string:
             name_group = displayio.Group(scale=name_scale)
             name_label = Label(name_font, text=name_string)
@@ -446,7 +447,8 @@ class PyBadger:
         name_label = Label(font=name_font, text=name_string, line_spacing=0.75)
         (_, _, width, height) = name_label.bounding_box
         name_label.x = ((self.display.width // (2 * name_scale)) - width // 2)
-        name_label.y = int(height // (0.45 * name_scale))
+        # name_label.y = int(height // (0.5 * name_scale))
+        name_label.y = int( (self.display.height // 2) + 25)
         name_label.color = foreground_text_color
         name_group.append(name_label)
 
