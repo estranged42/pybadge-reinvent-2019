@@ -74,6 +74,19 @@ def incriment_count(n):
         return new_count
 
 
+def get_announcements_since(ts=0):
+    response = table.scan()
+    all_announcements = []
+    for ann in response['Items']:
+        if int(ann['pub_date']) > ts:
+            all_announcements.append(ann)
+
+    return all_announcements
+
 # print( entry_exists(id) )
 
-print(incriment_count(5))
+# print(incriment_count(5))
+
+a = get_announcements_since(1575170000)
+print( len(a) )
+
