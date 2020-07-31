@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Script wrapper for testing, packaging and deploying the pybadge lambda function",
     "dependencies": {
+        "dot-prop": ">=5.1.1",
         "https-proxy-agent": "^3.0.0",
         "serverless-finch": "^2.4.2"
     },
@@ -15,9 +16,10 @@
         "deploy": "bin/deploy.sh"
     },
     "devDependencies": {
-        "serverless": "^1.57.0",
-        "serverless-offline": "^5.12.0",
+        "dot-prop": ">=5.1.1",
+        "serverless": "^1.77.1",
+        "serverless-offline": "^6.5.0",
         "serverless-pseudo-parameters": "^2.5.0",
-        "serverless-python-requirements": "^5.0.1"
+        "serverless-python-requirements": "^5.1.0"
     }
 }
