@@ -136,6 +136,7 @@ resources:
               Action:
                 - dynamodb:GetItem
                 - dynamodb:UpdateItem
+                - dynamodb:PutItem
               Resource:
                 - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/aws_service_announcements"
                 - "arn:aws:dynamodb:#{AWS::Region}:#{AWS::AccountId}:table/aws_service_announcements_metadata"
