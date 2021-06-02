@@ -4,7 +4,7 @@ docutils==0.14
 jmespath==0.9.4
 python-dateutil==2.8.0
 six==1.12.0
-urllib3==1.25.3
+urllib3==1.26.5
 requests==2.22.0
 feedparser==5.2.1
 
